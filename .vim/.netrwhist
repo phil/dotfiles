@@ -1,4 +1,7 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/Users/phil'
-let g:netrw_dirhist_2='/Users'
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/Users/phil/Sites/maniacalrobot.co.uk/app/admin'
+let g:netrw_dirhist_2='/Users/phil/Sites/maniacalrobot.co.uk'
+let g:netrw_dirhist_3='/Users/phil/Sites/maniacalrobot.co.uk/app'
+let g:netrw_dirhist_4='/Users/phil/Sites/maniacalrobot.co.uk/app/admin'
+let g:netrw_dirhist_5='/Users/phil/Sites/maniacalrobot.co.uk'

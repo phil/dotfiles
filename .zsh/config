@@ -1,0 +1,23 @@
+
+
+# Prompt
+PROMPT='%~ ' # default prompt
+RPROMPT='[%* on %D]' # prompt for right side of screen
+
+#%d Your current working directory relative to /home/
+#%~ Your current working directory relative to /home/member/u/username
+#%B....%b Begin and end bold print
+#%U....%u Begin and end underlined print
+#%M server name - prodigy.redbrick.dcu.ie
+#%m The part of the hostname up to the first . - prodigy
+#%n Your Login Name
+#%T System time in HH:mm format
+#%* System time in HH:mm:ss format
+#%D Today's Date in YY-MM-DD
+#%l Your current tty e.g. pts/100 
+
+# Ensure Key is loaded into ssh-agent
+ssh-add
+
+# Include RVM scripts
+[[ -s "/Users/phil/.rvm/scripts/rvm" ]] && source "/Users/phil/.rvm/scripts/rvm"
