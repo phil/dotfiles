@@ -1,0 +1,2 @@
+
+fpath=($fpath ~/.zsh/func)

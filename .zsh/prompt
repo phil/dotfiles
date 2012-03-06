@@ -1,0 +1,25 @@
+# Prompt
+
+autoload colors && colors
+autoload -U zgitinit && zgitinit
+
+prompt_setup () {
+	PROMPT="%c "
+
+	RPROMPT="["
+	RPROMPT+="\$(git_status) "
+	RPROMPT+="\$(rvm_status)"
+	RPROMPT+="]"
+	#export PROMPT RPROMPT
+}
+
+git_status () {
+	if zgit_inworktree; then
+	  echo "± %{$fg[white]%}$(zgit_branch)%{$reset_color%}"
+	fi
+}
+rvm_status () {
+	echo "$(~/.rvm/bin/rvm-prompt)"
+}
+
+prompt_setup 
