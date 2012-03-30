@@ -4,7 +4,7 @@ autoload colors && colors
 autoload -U zgitinit && zgitinit
 
 prompt_setup () {
-	PROMPT="%c "
+	PROMPT="%{$fg[light_grey]%}%c/%{$reset_color%} "
 
 	RPROMPT="["
 	RPROMPT+="\$(git_status) "

@@ -1,3 +1,4 @@
+alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
 alias ls="ls -lhaF"
 
 alias gs="git status"
@@ -5,3 +6,5 @@ alias ga="git add"
 alias gc="git commit"
 alias gco="git checkout"
 alias gp="git push"
+
+alias bx="bundle exec"
