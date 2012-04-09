@@ -21,3 +21,11 @@ RPROMPT='[%* on %D]' # prompt for right side of screen
 
 # Include TMUXinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+
+
+# Show completion on first TAB
+setopt menucomplete
+
+# Load completions for Ruby, Git, etc.
+autoload compinit
+compinit

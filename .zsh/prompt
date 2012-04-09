@@ -1,25 +1,51 @@
 # Prompt
 
 autoload colors && colors
-autoload -U zgitinit && zgitinit
+#autoload -U zgitinit && zgitinit
 
-prompt_setup () {
-	PROMPT="%{$fg[light_grey]%}%c/%{$reset_color%} "
-
-	RPROMPT="["
-	RPROMPT+="\$(git_status) "
-	RPROMPT+="\$(rvm_status)"
-	RPROMPT+="]"
-	#export PROMPT RPROMPT
+init_prompt () {
+	PROMPT="\$(left_prompt) "
+	RPROMPT="[\$(right_prompt)]"
 }
 
+left_prompt () {
+    local output="%{$fg[light_grey]%}%c/%{$reset_color%}"
+    echo $output
+}
+
+right_prompt () {
+    output=($(git_status) $(rvm_status))
+    print ${(j" ")output}
+}
+
+
+# [± branch-merging ruby-1.9.3-p125@nyx]
 git_status () {
-	if zgit_inworktree; then
-	  echo "± %{$fg[white]%}$(zgit_branch)%{$reset_color%}"
-	fi
+    local repo_status=""
+    local repo_path="`git rev-parse --git-dir 2>/dev/null`"
+    
+    if [[ $repo_path != '' && $repo_path != '~' && $repo_path != "$HOME/.git" ]]; then
+        if [[ $repo_path != "." && `git ls-files -m` != "" ]]; then
+            # Dirty
+            repo_status+="%{$fg[red]%}±%{$reset_color%} "
+        else
+            repo_status+="± "
+        fi
+        repo_status+="`git symbolic-ref -q HEAD | sed 's/refs\/heads\///'`"
+
+        if [[ -e "$repo_path/BISECT_LOG" ]]; then
+            repo_status+="+bisect"
+        elif [[ -e "$repo_path/MERGE_HEAD" ]]; then
+            repo_status+="+merge"
+        elif [[ -e "$repo_path/rebase" || -e "$repo_path/rebase-apply" || -e "$repo_path/rebase-merge" || -e "$repo_path/../.dotest" ]]; then
+            repo_status+="+rebase"
+        fi
+    fi
+
+    echo $repo_status
 }
 rvm_status () {
 	echo "$(~/.rvm/bin/rvm-prompt)"
 }
 
-prompt_setup 
+init_prompt
