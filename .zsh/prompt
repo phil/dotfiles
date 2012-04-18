@@ -31,7 +31,9 @@ git_status () {
         else
             repo_status+="± "
         fi
-        repo_status+="`git symbolic-ref -q HEAD | sed 's/refs\/heads\///'`"
+
+        # branch
+        repo_status+="%{$fg[white]%}`git symbolic-ref -q HEAD | sed 's/refs\/heads\///'`%{$reset_color%}"
 
         if [[ -e "$repo_path/BISECT_LOG" ]]; then
             repo_status+="+bisect"

@@ -1,5 +1,7 @@
 call pathogen#infect()
 
+" Reload with :source ~/.vimrc
+
 "Basic
 set nocompatible
 set cursorline
@@ -48,3 +50,11 @@ set laststatus=2
 ":hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 "
 "let g:Powerline_symbols = 'fancy'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tests
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! RunTest()
+    exec ":!clear && echo % && bundle exec rspec %"
+endfunction
+map <leader>s :call RunTest()<CR>
