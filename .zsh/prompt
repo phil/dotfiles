@@ -14,7 +14,7 @@ left_prompt () {
 }
 
 right_prompt () {
-    output=($(git_status) $(rvm_status))
+    output=($(zle_mode) $(git_status) $(rvm_status))
     print ${(j" ")output}
 }
 
@@ -49,5 +49,21 @@ git_status () {
 rvm_status () {
 	echo "$(~/.rvm/bin/rvm-prompt)"
 }
+
+zle_mode () {
+    echo "$ZLE_MODE"
+}
+
+function zle-line-init zle-keymap-select {
+    case $KEYMAP in
+        vicmd) ZLE_MODE="COMMAND";; 
+        main) ZLE_MODE="";; # Should be using viins instead of main, but this works for now
+    esac
+    zle reset-prompt
+}
+
+ZLE_MODE=""
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 init_prompt

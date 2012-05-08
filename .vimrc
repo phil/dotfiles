@@ -21,7 +21,7 @@ set encoding=utf-8
 let mapleader=","
 
 "Colours
-set t_Co=16
+set t_Co=256
 set background=dark
 colorscheme solarized
 
@@ -34,6 +34,17 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
+
+" CtrlP
+let g:ctrlp_map = '<leader>t'
+let g:ctrlp_cmd = 'CtrlP'
+"nnoremap <leader>t :CtrlP<CR>
+nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>m :CtrlPMRU<CR>
+
+" Shortcuts
+inoremap jj <ESC>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SCROLLING

@@ -15,6 +15,10 @@ RPROMPT='[%* on %D]' # prompt for right side of screen
 #%* System time in HH:mm:ss format
 #%D Today's Date in YY-MM-DD
 #%l Your current tty e.g. pts/100 
+#
+
+# Set to use Vim style COMMAND/INSERT mode
+bindkey -v
 
 # Include RVM scripts
 [[ -s "/Users/phil/.rvm/scripts/rvm" ]] && source "/Users/phil/.rvm/scripts/rvm"
