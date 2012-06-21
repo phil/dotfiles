@@ -5,18 +5,32 @@ call pathogen#infect()
 "Basic
 set nocompatible
 set cursorline
-set number
+set relativenumber
 
 syntax on
 filetype plugin indent on
 
 set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set autoindent
+set linebreak
+
+" Temp Files
+set backup
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+" Switch off Swap Files for now
+set noswapfile
 
 set encoding=utf-8
+
+" No arrow keys please
+map <Left> <Nop>
+map <Right> <Nop>
+map <Up> <Nop>
+map <Down> <Nop>
 
 let mapleader=","
 
@@ -24,6 +38,27 @@ let mapleader=","
 set t_Co=256
 set background=dark
 colorscheme solarized
+
+" Autoload Commands
+if has("autocmd")
+  autocmd InsertEnter * :set number
+  autocmd InsertLeave * :set relativenumber
+
+"autocmd FocusLost * :set number
+"autocmd FocusGained * :set relativenumber
+
+  autocmd bufwritepost .vimrc source $MYVIMRC
+endif
+
+function! ToggleLineNumbers()
+  if &number == 1
+    set relativenumber
+  else
+    set number
+  end
+endfunction
+map <leader>; :call ToggleLineNumbers()<CR>
+
 
 " NERDTree Config
 map <leader>n :NERDTreeToggle<CR>
@@ -46,14 +81,14 @@ nnoremap <leader>m :CtrlPMRU<CR>
 inoremap jj <ESC>
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " SCROLLING
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
 set sidescroll=1
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " STATUS LINE / POWERLINE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set laststatus=2
@@ -62,10 +97,69 @@ set laststatus=2
 "
 "let g:Powerline_symbols = 'fancy'
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Tests
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! RunTest()
-    exec ":!clear && echo % && bundle exec rspec %"
+function! RunSpecFile(file)
+  if filereadable(a:file)
+    exec '!clear && echo ' . a:file  ' && bundle exec rspec --color ' . a:file
+  else
+    echo "File " . a:file . " does not exist"
+  endif
 endfunction
-map <leader>s :call RunTest()<CR>
+
+function! RunSpec()
+  let currentFile = expand('%')
+  if IsSpecFile(currentFile)
+    call RunSpecFile(currentFile)
+  elseif IsCodeFile(currentFile)
+    let specFile = CodeToSpecFile(currentFile)
+    call RunSpecFile(specFile)
+  end
+endfunction
+map <leader>s :call RunSpec()<CR>
+
+" Alternate Files
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function! GotoAlternateFile()
+  let currentFile = expand('%')
+  if IsSpecFile(currentFile)
+    let codeFile = SpecToCodeFile(currentFile)
+    exec ":e " . codeFile
+  elseif IsCodeFile(currentFile)
+    let specFile = CodeToSpecFile(currentFile)
+    exec ":e " . specFile
+  end
+endfunction
+map <leader>. :call GotoAlternateFile()<CR>
+
+function! IsSpecFile(file)
+  return match(a:file, '^spec/') != -1
+endfunction
+
+function! IsCodeFile(file)
+  return !IsSpecFile(a:file) && (match(a:file, "\.rb") != -1)
+endfunction
+
+function! IsRailsAppFile(file)
+  return match(a:file, '\<controllers\>\|\<models\>\|\<views\>') != -1
+endfunction
+
+function! CodeToSpecFile(file)
+  let specFile = a:file
+  if IsRailsAppFile(a:file)
+    let specFile = substitute(specFile, '^app/', '', '')
+  endif
+  let specFile = 'spec/' . substitute(specFile, '\.rb$', '_spec.rb', '')
+  return specFile
+endfunction
+
+function! SpecToCodeFile(file)
+  let codeFile = substitute(a:file, '_spec\.rb$', '.rb', '')
+  let codeFile = substitute(codeFile, '^spec/', '', '')
+  if IsRailsAppFile(a:file)
+    let codeFile = 'app/' . codeFile
+  endif
+  return codeFile
+endfunction
