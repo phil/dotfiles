@@ -17,6 +17,10 @@ set softtabstop=2
 set autoindent
 set linebreak
 
+" BASH style filename completion
+set wildmode=longest:full
+set wildmenu
+
 " Temp Files
 set backup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -49,6 +53,13 @@ if has("autocmd")
 
   autocmd bufwritepost .vimrc source $MYVIMRC
 endif
+
+" GOTO
+noremap <leader><leader> <c-^>
+
+" Edit fles local to current buffer
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>e :edit %%
 
 function! ToggleLineNumbers()
   if &number == 1
