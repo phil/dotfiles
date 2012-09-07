@@ -8,3 +8,5 @@ alias gco="git checkout"
 alias gp="git push"
 
 alias bx="bundle exec"
+
+alias subl="/Applications/Sublime\ Text\ 2.app/Contents/SharedSupport/bin/subl"
