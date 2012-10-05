@@ -21,12 +21,22 @@ RPROMPT='[%* on %D]' # prompt for right side of screen
 # Set to use Vim style COMMAND/INSERT mode
 bindkey -v
 
+# Setup for GCC fixes
+export CC=/usr/local/bin/gcc-4.2
+export CPPFLAGS=-I/opt/X11/include
+
 # Include RVM scripts
 [[ -s "/Users/phil/.rvm/scripts/rvm" ]] && source "/Users/phil/.rvm/scripts/rvm"
 
 # Include TMUXinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 
+# History
+HISTSIZE=2000
+SAVEHIST=2000
+HISTFILE=~/.zhistory
+setopt inc_append_history
+setopt share_history
 
 # Show completion on first TAB
 setopt menucomplete
