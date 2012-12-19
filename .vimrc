@@ -4,8 +4,8 @@ call pathogen#infect()
 
 "Basic
 set nocompatible
-set cursorline
-set relativenumber
+set nocursorline
+set number
 
 syntax on
 filetype plugin indent on
@@ -16,6 +16,12 @@ set shiftwidth=2
 set softtabstop=2
 set autoindent
 set linebreak
+
+" 72 char text width
+set tw=80
+set cc=+1
+
+set hlsearch
 
 " BASH style filename completion
 set wildmode=longest:full
@@ -29,6 +35,12 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set noswapfile
 
 set encoding=utf-8
+
+" When spliting, focus on the new pane
+map <C-\> :vsplit<CR>
+map <C-_> :split<CR>
+set splitbelow
+set splitright
 
 " No arrow keys please
 map <Left> <Nop>
@@ -45,13 +57,13 @@ colorscheme solarized
 
 " Autoload Commands
 if has("autocmd")
-  autocmd InsertEnter * :set number
-  autocmd InsertLeave * :set relativenumber
+  "autocmd InsertEnter * :set number
+  "autocmd InsertLeave * :set relativenumber
 
 "autocmd FocusLost * :set number
 "autocmd FocusGained * :set relativenumber
 
-  autocmd bufwritepost .vimrc source $MYVIMRC
+  "autocmd bufwritepost .vimrc source $MYVIMRC
 endif
 
 " GOTO

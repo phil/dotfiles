@@ -5,6 +5,14 @@ config defaultToCurrentScreen true
 config nudgePercentOf screenSize
 config resizePercentOf screenSize
 
+alias sox screenOriginX
+alias soy screenOriginY
+alias ssx screenSizeX
+alias ssy screenSizeY
+
+alias hyperKey ctrl;alt;cmd
+
+
 # Resize Bindings
 #bind right:alt       resize +10% +0
 #bind left:alt        resize -10% +0
@@ -17,12 +25,17 @@ config resizePercentOf screenSize
 #
 
 # Fullscreen/Centrescreen
+alias fullscreen ${sox};${soy} ${ssx};${ssy}
 
 # Push Bindings
 bind right:ctrl;alt;cmd  push right bar-resize:screenSizeX/2
 bind left:ctrl;alt;cmd   push left  bar-resize:screenSizeX/2
 bind up:ctrl;alt;cmd     push up    bar-resize:screenSizeY/2
 bind down:ctrl;alt;cmd   push down  bar-resize:screenSizeY/2
+
+bind m:ctrl;alt;cmd move ${fullscreen}
+
+bind t:${hyperKey} focus 'iTerm'
 
 # Nudge Bindings
 #bind right:shift;alt nudge +10% +0

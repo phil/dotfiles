@@ -1,5 +1,5 @@
 #alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
-alias ls="ls -lhaF"
+alias ls="ls -lhaFG"
 
 alias gs="git status"
 alias ga="git add"

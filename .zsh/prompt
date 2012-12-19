@@ -14,7 +14,7 @@ left_prompt () {
 }
 
 right_prompt () {
-    output=($(zle_mode) $(git_status) $(rvm_status))
+    output=($(zle_mode) $(git_status) $(rvm_status) $(timestamp))
     print ${(j" ")output}
 }
 
@@ -48,6 +48,9 @@ git_status () {
 }
 rvm_status () {
 	echo "$(~/.rvm/bin/rvm-prompt)"
+}
+timestamp () {
+  echo "%*"
 }
 
 zle_mode () {
