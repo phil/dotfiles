@@ -87,6 +87,7 @@ map <leader>; :call ToggleLineNumbers()<CR>
 
 " NERDTree Config
 map <leader>n :NERDTreeToggle<CR>
+map <leader>N :NERDTreeFind<CR>
 let NERDTreeQuitOnOpen = 1
 
 " Faster Pane switching
