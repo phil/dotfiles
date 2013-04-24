@@ -1,5 +1,5 @@
 #alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
-alias ls="ls -lhaFG"
+alias ll="ls -lhaFG"
 
 alias gs="git status"
 alias ga="git add"
@@ -10,3 +10,5 @@ alias gp="git push"
 alias bx="bundle exec"
 
 alias subl="/Applications/Sublime\ Text\ 2.app/Contents/SharedSupport/bin/subl"
+
+alias t="task"

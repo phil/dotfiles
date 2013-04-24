@@ -9,7 +9,7 @@ init_prompt () {
 }
 
 left_prompt () {
-    local output="%{$fg[light_grey]%}%c/%{$reset_color%}"
+    local output="%{$fg[white]%}%c/%{$reset_color%}"
     echo $output
 }
 

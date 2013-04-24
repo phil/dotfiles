@@ -17,6 +17,8 @@ set softtabstop=2
 set autoindent
 set linebreak
 
+set backspace=indent,eol,start
+
 " 72 char text width
 set tw=80
 set cc=+1
@@ -98,7 +100,11 @@ let g:ctrlp_map = '<leader>t'
 let g:ctrlp_cmd = 'CtrlP'
 "nnoremap <leader>t :CtrlP<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
-nnoremap <leader>m :CtrlPMRU<CR>
+noremap <leader>m :CtrlPMRU<CR>
+let g:ctrlp_custom_ignore = {
+  \ 'dir': '\.git$\|\.hg$\|\.svn$|tmp\/|doc\/',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ }
 
 " Shortcuts
 inoremap jj <ESC>
