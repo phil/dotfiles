@@ -52,3 +52,12 @@
 [submodule ".vim/bundle/vim-dispatch"]
 	path = .vim/bundle/vim-dispatch
 	url = git://github.com/tpope/vim-dispatch.git
+[submodule ".vim/bundle/matchit"]
+	path = .vim/bundle/matchit
+	url = git@github.com:vim-scripts/matchit.zip.git
+[submodule ".vim/bundle/vim-textobj-user"]
+	path = .vim/bundle/vim-textobj-user
+	url = git@github.com:kana/vim-textobj-user.git
+[submodule ".vim/bundle/vim-textobj-rubyblock"]
+	path = .vim/bundle/vim-textobj-rubyblock
+	url = git@github.com:nelstrom/vim-textobj-rubyblock.git

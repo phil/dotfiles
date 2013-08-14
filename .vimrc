@@ -19,6 +19,10 @@ set linebreak
 
 set backspace=indent,eol,start
 
+" Set Keymappings timeout
+" This ensures <ESC> followed quickly by <shift>-O is fast
+set timeout timeoutlen=5000 ttimeoutlen=100
+
 " 72 char text width
 set tw=80
 set cc=+1
@@ -110,6 +114,8 @@ let g:ctrlp_custom_ignore = {
 " Shortcuts
 inoremap jj <ESC>
 
+
+runtime macros/matchit.vim
 
 
 " SCROLLING
