@@ -134,68 +134,77 @@ set laststatus=2
 "let g:Powerline_symbols = 'fancy'
 
 
+map <Leader>S :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+"map <Leader>l :call RunLastSpec()<CR>
+map <Leader>r :call RunAllSpecs()<CR>
+"let g:rspec_command = "Rrunner {spec}"
+let g:rspec_command = "Dispatch zeus rspec {spec}"
+
+
+
 " Tests
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! RunSpecFile(file)
-  if filereadable(a:file)
-    exec '!clear && echo ' . a:file  ' && bundle exec rspec --color ' . a:file
-  else
-    echo "File " . a:file . " does not exist"
-  endif
-endfunction
+"function! RunSpecFile(file)
+  "if filereadable(a:file)
+    "exec '!clear && echo ' . a:file  ' && bundle exec rspec --color ' . a:file
+  "else
+    "echo "File " . a:file . " does not exist"
+  "endif
+"endfunction
 
-function! RunSpec()
-  let currentFile = expand('%')
-  if IsSpecFile(currentFile)
-    call RunSpecFile(currentFile)
-  elseif IsCodeFile(currentFile)
-    let specFile = CodeToSpecFile(currentFile)
-    call RunSpecFile(specFile)
-  end
-endfunction
-map <leader>s :call RunSpec()<CR>
+"function! RunSpec()
+  "let currentFile = expand('%')
+  "if IsSpecFile(currentFile)
+    "call RunSpecFile(currentFile)
+  "elseif IsCodeFile(currentFile)
+    "let specFile = CodeToSpecFile(currentFile)
+    "call RunSpecFile(specFile)
+  "end
+"endfunction
+"map <leader>s :call RunSpec()<CR>
 
 " Alternate Files
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-function! GotoAlternateFile()
-  let currentFile = expand('%')
-  if IsSpecFile(currentFile)
-    let codeFile = SpecToCodeFile(currentFile)
-    exec ":e " . codeFile
-  elseif IsCodeFile(currentFile)
-    let specFile = CodeToSpecFile(currentFile)
-    exec ":e " . specFile
-  end
-endfunction
-map <leader>. :call GotoAlternateFile()<CR>
+"function! GotoAlternateFile()
+  "let currentFile = expand('%')
+  "if IsSpecFile(currentFile)
+    "let codeFile = SpecToCodeFile(currentFile)
+    "exec ":e " . codeFile
+  "elseif IsCodeFile(currentFile)
+    "let specFile = CodeToSpecFile(currentFile)
+    "exec ":e " . specFile
+  "end
+"endfunction
+"map <leader>. :call GotoAlternateFile()<CR>
 
-function! IsSpecFile(file)
-  return match(a:file, '^spec/') != -1
-endfunction
+"function! IsSpecFile(file)
+  "return match(a:file, '^spec/') != -1
+"endfunction
 
-function! IsCodeFile(file)
-  return !IsSpecFile(a:file) && (match(a:file, "\.rb") != -1)
-endfunction
+"function! IsCodeFile(file)
+  "return !IsSpecFile(a:file) && (match(a:file, "\.rb") != -1)
+"endfunction
 
-function! IsRailsAppFile(file)
-  return match(a:file, '\<controllers\>\|\<models\>\|\<views\>') != -1
-endfunction
+"function! IsRailsAppFile(file)
+  "return match(a:file, '\<controllers\>\|\<models\>\|\<views\>') != -1
+"endfunction
 
-function! CodeToSpecFile(file)
-  let specFile = a:file
-  if IsRailsAppFile(a:file)
-    let specFile = substitute(specFile, '^app/', '', '')
-  endif
-  let specFile = 'spec/' . substitute(specFile, '\.rb$', '_spec.rb', '')
-  return specFile
-endfunction
+"function! CodeToSpecFile(file)
+  "let specFile = a:file
+  "if IsRailsAppFile(a:file)
+    "let specFile = substitute(specFile, '^app/', '', '')
+  "endif
+  "let specFile = 'spec/' . substitute(specFile, '\.rb$', '_spec.rb', '')
+  "return specFile
+"endfunction
 
-function! SpecToCodeFile(file)
-  let codeFile = substitute(a:file, '_spec\.rb$', '.rb', '')
-  let codeFile = substitute(codeFile, '^spec/', '', '')
-  if IsRailsAppFile(a:file)
-    let codeFile = 'app/' . codeFile
-  endif
-  return codeFile
-endfunction
+"function! SpecToCodeFile(file)
+  "let codeFile = substitute(a:file, '_spec\.rb$', '.rb', '')
+  "let codeFile = substitute(codeFile, '^spec/', '', '')
+  "if IsRailsAppFile(a:file)
+    "let codeFile = 'app/' . codeFile
+  "endif
+  "return codeFile
+"endfunction
