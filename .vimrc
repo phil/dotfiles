@@ -114,6 +114,7 @@ let g:ctrlp_custom_ignore = {
 " Shortcuts
 inoremap jj <ESC>
 
+map g= gg=G
 
 runtime macros/matchit.vim
 

@@ -31,6 +31,9 @@ export CPPFLAGS=-I/opt/X11/include
 # Include TMUXinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 
+# Include z.sh
+. /usr/local/etc/profile.d/z.sh
+
 # History
 HISTSIZE=2000
 SAVEHIST=2000
