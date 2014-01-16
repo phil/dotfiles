@@ -111,6 +111,12 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll)$',
   \ }
 
+"let g:multi_cursor_use_default_mapping=1
+"let g:multi_cursor_next_key='<C-j>'
+"let g:multi_cursor_prev_key='<C-k>'
+"let g:multi_cursor_skip_key='<C-/>'
+"let g:multi_cursor_quit_key='<Esc>'
+
 " Shortcuts
 inoremap jj <ESC>
 
@@ -140,7 +146,8 @@ map <Leader>s :call RunNearestSpec()<CR>
 "map <Leader>l :call RunLastSpec()<CR>
 map <Leader>r :call RunAllSpecs()<CR>
 "let g:rspec_command = "Rrunner {spec}"
-let g:rspec_command = "Dispatch zeus rspec {spec}"
+"let g:rspec_command = "Dispatch zeus rspec {spec}"
+let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec {spec}"
 
 
 
