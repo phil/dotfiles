@@ -31,10 +31,14 @@ bindkey -v
 # Now using chruby
 source /usr/local/opt/chruby/share/chruby/chruby.sh # Main chruby scripts
 source /usr/local/opt/chruby/share/chruby/auto.sh # Auto switch ruby based on .ruby-version
-chruby 2.0.0 # load ruby 2 as system
+chruby_auto
 
 # Include TMUXinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+source ~/.zsh/autocompletions/tmuxinator.zsh
+
+# setup docker env
+eval `docker-osx env`
 
 # Include z.sh
 . /usr/local/etc/profile.d/z.sh

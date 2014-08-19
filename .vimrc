@@ -19,6 +19,9 @@ set linebreak
 
 set backspace=indent,eol,start
 
+" because my spelling is pretty rubbish
+set spell
+
 " Set Keymappings timeout
 " This ensures <ESC> followed quickly by <shift>-O is fast
 set timeout timeoutlen=5000 ttimeoutlen=100
@@ -32,6 +35,11 @@ set hlsearch
 " BASH style filename completion
 set wildmode=longest:full
 set wildmenu
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,solr/**,log/**,*.psd,*.PSD,.git/**,.gitkeep
+set wildignore+=*.ico,*.ICO,backup/**,*.sql,*.dump,*.tmp,*.min.js,Gemfile.lock
+set wildignore+=*.png,*.PNG,*.JPG,*.jpg,*.JPEG,*.jpeg,*.GIF,*.gif,*.pdf,*.PDF
+set wildignore+=vendor/**,coverage/**,tmp/**,rdoc/**,*.BACKUP.*,*.BASE.*,*.LOCAL.*,*.REMOTE.*,.sass-cache/**
 
 " Temp Files
 set backup
@@ -121,6 +129,9 @@ let g:ctrlp_custom_ignore = {
 inoremap jj <ESC>
 
 map g= gg=G
+
+nnoremap Q @q
+vnoremap Q :norm @q<cr>
 
 runtime macros/matchit.vim
 
