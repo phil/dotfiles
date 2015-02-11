@@ -152,7 +152,7 @@ set sidescroll=1
 
 " STATUS LINE / POWERLINE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set laststatus=2
+"set laststatus=2
 "set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 ":hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 "
@@ -168,6 +168,11 @@ map <Leader>r :call RunAllSpecs()<CR>
 let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec {spec}"
 
 
+" Powerline
+" """""""""
+"python from powerline.vim import setup as powerline_setup
+"python powerline_setup()
+"python del powerline_setup
 
 " Tests
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
