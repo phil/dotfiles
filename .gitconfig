@@ -1,3 +1,14 @@
 [user]
 	email = phil@maniacalrobot.co.uk
 	name = Phil Balchin
+
+[alias]
+  s = status
+  ca = commit -av
+  ci = commit -v
+  co = checkout
+  ba = branch -av
+  bam = branch -av --merged
+  lg = log --graph --pretty=format:'%Cred%h -%d %s (%cr) <%an>%Creset' --abbrev-commit --date=short --branches
+[push]
+	default = simple

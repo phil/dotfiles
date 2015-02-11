@@ -39,7 +39,7 @@ set wildmenu
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,solr/**,log/**,*.psd,*.PSD,.git/**,.gitkeep
 set wildignore+=*.ico,*.ICO,backup/**,*.sql,*.dump,*.tmp,*.min.js,Gemfile.lock
 set wildignore+=*.png,*.PNG,*.JPG,*.jpg,*.JPEG,*.jpeg,*.GIF,*.gif,*.pdf,*.PDF
-set wildignore+=vendor/**,coverage/**,tmp/**,rdoc/**,*.BACKUP.*,*.BASE.*,*.LOCAL.*,*.REMOTE.*,.sass-cache/**
+set wildignore+=vendor/**,coverage/**,tmp/**,doc/**,rdoc/**,*.BACKUP.*,*.BASE.*,*.LOCAL.*,*.REMOTE.*,.sass-cache/**
 
 " Temp Files
 set backup
@@ -111,13 +111,13 @@ nnoremap <c-l> <c-w>l
 " CtrlP
 let g:ctrlp_map = '<leader>t'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_extensions = ['funky']
 "nnoremap <leader>t :CtrlP<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
-noremap <leader>m :CtrlPMRU<CR>
-let g:ctrlp_custom_ignore = {
-  \ 'dir': '\.git$\|\.hg$\|\.svn$|tmp\/|doc\/',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ }
+nnoremap <leader>m :CtrlPMRU<CR>
+nnoremap <leader>f :CtrlPFunky<Cr>
+"let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)|doc$'
+"let g:ctrlp_custom_ignore = '\.git|doc'
 
 "let g:multi_cursor_use_default_mapping=1
 "let g:multi_cursor_next_key='<C-j>'
@@ -125,8 +125,15 @@ let g:ctrlp_custom_ignore = {
 "let g:multi_cursor_skip_key='<C-/>'
 "let g:multi_cursor_quit_key='<Esc>'
 
+" Search Helpers
+nnoremap g* "ayiw :Ag "<C-R>a"<CR>
+vnoremap g* "ay :Ag "<C-R>a"<CR>
+
 " Shortcuts
 inoremap jj <ESC>
+
+"nnoremap K [m
+"nnoremap  ]m
 
 map g= gg=G
 
