@@ -12,3 +12,5 @@
   lg = log --graph --pretty=format:'%Cred%h -%d %s (%cr) <%an>%Creset' --abbrev-commit --date=short --branches
 [push]
 	default = simple
+[core]
+	editor = /usr/local/bin/vim

@@ -135,7 +135,7 @@ inoremap jj <ESC>
 "nnoremap K [m
 "nnoremap  ]m
 
-map g= gg=G
+map g= gg=G''
 
 nnoremap Q @q
 vnoremap Q :norm @q<cr>
