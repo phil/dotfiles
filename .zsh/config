@@ -29,14 +29,12 @@ bindkey -v
 #[[ -s "/Users/phil/.rvm/scripts/rvm" ]] && source "/Users/phil/.rvm/scripts/rvm"
 #
 # Now using chruby
-if [[$OSTYPE == "darwin"*]]; then
+if [[ $OSTYPE == "darwin"* ]]; then
 source /usr/local/opt/chruby/share/chruby/chruby.sh # Main chruby scripts
 source /usr/local/opt/chruby/share/chruby/auto.sh # Auto switch ruby based on .ruby-version
-elif [[$OSTYPE == "linux-gnu"]]; then
+elif [[ $OSTYPE == "linux-gnu" ]]; then
 source /usr/local/share/chruby/chruby.sh # Main chruby scripts
 source /usr/local/share/chruby/auto.sh # Auto switch ruby based on .ruby-version
-elif
-# Unkown
 fi
 chruby_auto
 
@@ -44,11 +42,13 @@ chruby_auto
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 source ~/.zsh/autocompletions/tmuxinator.zsh
 
+if [[ $OSTYPE == "darwin"* ]]; then
 # setup docker env
 eval `docker-osx env`
 
 # Include z.sh
 . /usr/local/etc/profile.d/z.sh
+fi
 
 # History
 HISTSIZE=2000

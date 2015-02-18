@@ -3,7 +3,9 @@ setopt PROMPT_SUBST
 . ~/.zsh/aliases
 . ~/.zsh/prompt
 
+if [[ $OSTYPE == "darwin"* ]]; then
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 [[ -f ~/.zshrc.local ]] && . ~/.zsgrc.local
 
