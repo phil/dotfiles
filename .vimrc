@@ -1,4 +1,4 @@
-call pathogen#infect()
+"call pathogen#infect()
 
 " Reload with :source ~/.vimrc
 
