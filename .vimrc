@@ -1,9 +1,39 @@
 "call pathogen#infect()
 
+set nocompatible
+filetype off
+
 " Reload with :source ~/.vimrc
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+
+Plugin 'altercation/vim-colors-solarized'
+
+" Searching
+Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+Plugin 'tacahiroy/ctrlp-funky'
+Plugin 'rking/ag.vim'
+
+" Coding
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'tpope/vim-rails'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'scrooloose/nerdcommenter'
+
+" General Text Editing
+Plugin 'tpope/vim-surround'
+
+Plugin 'nelstrom/vim-textobj-rubyblock'
+Plugin 'kana/vim-textobj-user'
+
+Plugin 'terryma/vim-multiple-cursors'
+
+
+call vundle#end()
 
 "Basic
-set nocompatible
 set nocursorline
 set number
 
