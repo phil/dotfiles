@@ -43,3 +43,6 @@ vim.opt.foldlevel = 99
 -- za to toggle a fold
 -- zM to close all folds
 -- zR to open all folds
+
+-- NERDTree
+vim.g.NERDTreeShowHidden = 1
