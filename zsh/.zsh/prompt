@@ -1,0 +1,69 @@
+setopt PROMPT_SUBST
+autoload colors && colors
+
+init_prompt () {
+	PROMPT="\$(shortpath) "
+    RPROMPT="\$(gitstatus)"
+}
+
+shortpath() {
+    local fullpath="${$(pwd)/$HOME/~}"
+    local shortpath=""
+    local parts=("${(@s:/:)fullpath}")
+
+    for part in "${parts[@]}"; do
+        if [[ -n "$part" ]]; then
+            if [[ "$part" == "~" ]]; then
+                # Home directory
+                if [[ "$part" == "${parts[-1]}" ]]; then
+                    shortpath+="%B~%b"
+                else
+                    shortpath+="~"
+                fi
+
+            elif [[ "$part" == "${parts[-1]}" ]]; then
+                # Last part (current directory)
+                shortpath+="/%B${part}%b"
+
+            else
+                # Other parts
+                shortpath+="/${part:0:1}"
+            fi
+        fi
+    done
+
+    if [[ -z "$shortpath" ]]; then
+        shortpath="/"
+    fi
+
+    echo -e "%{$fg[white]%}${shortpath}%{$reset_color%}"
+}
+
+gitstatus () {
+    local repo_status=""
+    local repo_path="`git rev-parse --git-dir 2>/dev/null`"
+    
+    if [[ $repo_path != '' && $repo_path != '~' && $repo_path != "$HOME/.git" ]]; then
+        if [[ $repo_path != "." && `git status --short` != "" ]]; then
+            # Dirty
+            repo_status+="%{$fg[red]%}±%{$reset_color%} "
+        else
+            repo_status+="± "
+        fi
+
+        # branch
+        repo_status+="%{$fg[white]%}`git symbolic-ref -q HEAD | sed 's/refs\/heads\///'`%{$reset_color%}"
+        # branch status
+        if [[ -e "$repo_path/BISECT_LOG" ]]; then
+            repo_status+="+bisect"
+        elif [[ -e "$repo_path/MERGE_HEAD" ]]; then
+            repo_status+="+merge"
+        elif [[ -e "$repo_path/rebase" || -e "$repo_path/rebase-apply" || -e "$repo_path/rebase-merge" || -e "$repo_path/../.dotest" ]]; then
+            repo_status+="+rebase"
+        fi
+    fi
+
+    echo $repo_status
+}
+
+init_prompt

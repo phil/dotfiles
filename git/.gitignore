@@ -1,0 +1,10 @@
+# MacOS
+.DS_Store
+
+# vim
+.netrwhist
+.vim/bundle
+tags
+
+# development
+.env.development

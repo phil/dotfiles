@@ -1,0 +1,27 @@
+[user]
+	email = phil@maniacalrobot.co.uk
+	name = Phil Balchin
+
+[alias]
+  s = status
+  ; ca = commit -av
+  ci = commit -v
+  co = checkout
+  sw = switch
+  ba = branch -av
+  bam = branch -av --merged
+  bhis = branch --sort=-committerdate
+  lg = log --graph --pretty=format:'%Cred%h -%d %s (%cr) <%an>%Creset' --abbrev-commit --date=short --branches
+[push]
+	default = simple
+	autoSetupRemote = true
+[core]
+	editor = /usr/bin/vim
+	excludesfile = /Users/philbalchin/.config/git/ignore
+[http]
+	sslVerify = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

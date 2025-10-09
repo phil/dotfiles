@@ -1,0 +1,31 @@
+# Set to use Vim style COMMAND/INSERT mode
+# bindkey -v
+# Makes vimbindings easier to search
+# KEYTIMEOUT=1
+
+# Set vim as the default editor
+# export EDITOR=$HOMEBREW_PREFIX/bin/vim
+
+[[ -f $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Iterm2 Integration
+[[ -f ~/.iterm2_shell_integration.zsh ]] && source $HOME/.iterm2_shell_integration.zsh
+
+# Include z.sh
+# [[ -f $HOMEBREW_PREFIX/etc/profile.d/z.sh ]] && source $HOMEBREW_PREFIX/etc/profile.d/z.sh
+
+# History
+# HISTSIZE=2000
+# SAVEHIST=2000
+# HISTFILE=~/.zhistory
+# setopt inc_append_history
+# setopt share_history
+
+# Tab Completion
+# http://linux.die.net/man/1/zshoptions
+setopt auto_list
+setopt auto_menu
+
+# Load completions for Ruby, Git, etc.
+# autoload compinit
+# compinit

@@ -1,0 +1,15 @@
+alias ll="ls -lhaFG"
+
+alias bx="bundle exec"
+
+alias fs="foreman start"
+
+alias h="heroku"
+
+alias g="git"
+alias gs="git status"
+
+alias pgstart="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start"
+alias pgstop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
+alias n="nvim"
