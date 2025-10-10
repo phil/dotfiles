@@ -1,8 +1,8 @@
-export XDG_CONFIG_HOME=$HOME/.config/
-export XDG_CACHE_HOME=$HOME/.cache/
-export XDG_DATA_HOME=$HOME/.local/share/
-export XDG_STATE_HOME=$HOME/.local/state/
-# export XDG_RUNTIME_DIR=$HOME/.local/run/
+# export XDG_CONFIG_HOME=$HOME/.config/
+# export XDG_CACHE_HOME=$HOME/.cache/
+# export XDG_DATA_HOME=$HOME/.local/share/
+# export XDG_STATE_HOME=$HOME/.local/state/
+# # export XDG_RUNTIME_DIR=$HOME/.local/run/
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -94,7 +94,6 @@ export XDG_STATE_HOME=$HOME/.local/state/
 # )
 
 # export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-eval "$(mise activate zsh)"
 
 # source $ZSH/oh-my-zsh.sh
 
@@ -105,15 +104,16 @@ export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 # export PATH="$HOME/workspace/personal/rook/bin:$PATH"
 
 # Load ENV for Work/Personal
-if [[ -f ~/.zshrc_local ]] then
-  # .zshrc_local should load homebrew and any machine local environment
-  source ~/.zshrc_local
-else
-  touch ~/.zshrc_local
- echo ".zshrc_local has been created, please add homebrew setup"
- echo "eval \"$(/usr/local/bin/brew shellenv)\""
-fi
+# if [[ -f ~/.zshrc_local ]] then
+#   # .zshrc_local should load homebrew and any machine local environment
+#   source ~/.zshrc_local
+# else
+#   touch ~/.zshrc_local
+#  echo ".zshrc_local has been created, please add homebrew setup"
+#  echo "eval \"$(/usr/local/bin/brew shellenv)\""
+# fi
 
+eval "$(mise activate zsh)"
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)" # Better shell history
 
@@ -148,12 +148,12 @@ export EDITOR='vim'
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 
-alias ll="ls -lhaFG"
-alias bx="bundle exec"
-alias fs="foreman start"
-alias g="git"
-alias h="heroku"
-alias n="nvim"
+# alias ll="ls -lhaFG"
+# alias bx="bundle exec"
+# alias fs="foreman start"
+# alias g="git"
+# alias h="heroku"
+# alias n="nvim"
 # alias pgstart="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start"
 # alias pgstop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 
