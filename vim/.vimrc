@@ -1,3 +1,4 @@
+" vimrc for classic vim, use ~/.config/nvim for neovim
 set nocompatible
 filetype off
 
