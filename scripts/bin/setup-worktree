@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: setup-worktree <branch-name>" >&2
+  echo "Script to setup a new worktree for the current git repository. It will create a new branch based on origin/main or origin/master and switch to it in a new tmux session if inside tmux." >&2
+  exit 1
+fi
+
+in_tmux() {
+  [[ -n "${TMUX:-}" ]]
+}
+
+enter_worktree() {
+  if in_tmux; then
+    tmux new-session -d -s "$WORKTREE_NAME" -c "$WORKTREE_PATH"
+    tmux switch-client -t "$WORKTREE_NAME"
+  else
+    echo "Changing directory:"
+    echo "  cd ${WORKTREE_PATH}"
+    cd "$WORKTREE_PATH"
+    exec "$SHELL"
+  fi
+}
+
+BRANCH="$1"
+
+# Must be in a git repo
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  echo "Error: not inside a git repository." >&2
+  exit 1
+fi
+
+# Fetch latest from origin
+echo "Fetching latest from origin..."
+git fetch origin
+
+# Get the toplevel of the repo and derive names
+REPO_DIR="$(git rev-parse --show-toplevel)"
+REPO_NAME="$(basename "$REPO_DIR")"
+PARENT_DIR="$(dirname "$REPO_DIR")"
+WORKTREE_NAME="${REPO_NAME}-${BRANCH}"
+WORKTREE_PATH="${PARENT_DIR}/${WORKTREE_NAME}"
+
+# Check if tmux session already exists for this worktree
+if in_tmux && tmux has-session -t "$WORKTREE_NAME" 2>/dev/null; then
+  echo "Tmux session '${WORKTREE_NAME}' already exists, switching to it..."
+  tmux switch-client -t "$WORKTREE_NAME"
+  exit 0
+fi
+
+# Check if worktree already exists
+if [[ -d "$WORKTREE_PATH" ]]; then
+  echo "Worktree already exists at ${WORKTREE_PATH}."
+  enter_worktree
+  exit 0
+fi
+
+# Check if branch already exists
+if git show-ref --verify --quiet "refs/heads/${BRANCH}"; then
+  echo "Branch '${BRANCH}' already exists, creating worktree with existing branch..."
+  git worktree add "$WORKTREE_PATH" "$BRANCH"
+else
+  # Determine base branch (origin/main or origin/master)
+  if git show-ref --verify --quiet refs/remotes/origin/main; then
+    BASE="origin/main"
+  elif git show-ref --verify --quiet refs/remotes/origin/master; then
+    BASE="origin/master"
+  else
+    echo "Error: neither origin/main nor origin/master exists." >&2
+    exit 1
+  fi
+
+  echo "Creating worktree at ${WORKTREE_PATH} with new branch '${BRANCH}' based on ${BASE}..."
+  git worktree add -b "$BRANCH" "$WORKTREE_PATH" "$BASE"
+fi
+
+enter_worktree
