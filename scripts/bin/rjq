@@ -1,0 +1,5 @@
+#! /usr/bin/env ruby
+
+require 'json'
+
+puts eval(%{JSON.parse(STDIN.read)#{ARGV[0]}})
