@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 1 ]] || [[ "$1" != *:*:* ]]; then
+  echo "Usage: goto-tmux-pane S:W:P" >&2
+  echo "  S = session name, W = window name, P = pane title" >&2
+  echo "" >&2
+  echo "Example tmux binding:" >&2
+  echo "  bind-key g run-shell \"goto-tmux-pane 'mysession:mywindow:mypane'\"" >&2
+  exit 1
+fi
+
+IFS=':' read -r session window pane_title <<< "$1"
+
+tmux switch-client -t "$session"
+tmux select-window -t "$session:$window"
+
+pane_id=$(tmux list-panes -t "$session:$window" -F '#{pane_id} #{pane_title}' \
+  | awk -v title="$pane_title" '$2 == title { print $1; exit }')
+
+if [[ -z "$pane_id" ]]; then
+  echo "Error: no pane with title '$pane_title' in $session:$window" >&2
+  exit 1
+fi
+
+tmux select-pane -t "$pane_id"
