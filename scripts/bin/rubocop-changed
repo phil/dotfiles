@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+  echo "Error: not in a git repository" >&2
+  exit 1
+fi
+
+# Determine the main branch (master or main)
+main_branch=""
+if git show-ref --verify --quiet refs/heads/main; then
+  main_branch="main"
+elif git show-ref --verify --quiet refs/heads/master; then
+  main_branch="master"
+else
+  echo "Error: neither 'main' nor 'master' branch found" >&2
+  exit 1
+fi
+
+# Get current branch name
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Don't run if we're already on the main branch
+if [[ "$current_branch" == "$main_branch" ]]; then
+  echo "Already on $main_branch branch, nothing to check" >&2
+  exit 0
+fi
+
+# Get list of changed files compared to main branch
+# This includes modified, added, and renamed files
+changed_files=$(git diff --name-only --diff-filter=ACMR "$main_branch"...HEAD)
+
+# Filter for Ruby files and check if they exist
+ruby_files=()
+while IFS= read -r file; do
+  if [[ -f "$file" ]] && [[ "$file" =~ \.(rb|rake)$ || "$file" =~ (Gemfile|Rakefile|Guardfile|Capfile|Vagrantfile)$ ]]; then
+    ruby_files+=("$file")
+  fi
+done <<< "$changed_files"
+
+# Check if we have any Ruby files to process
+if [[ ${#ruby_files[@]} -eq 0 ]]; then
+  echo "No Ruby files changed compared to $main_branch"
+  exit 0
+fi
+
+# Check if rubocop is available
+if ! command -v rubocop > /dev/null 2>&1; then
+  echo "Error: rubocop not found. Please install it first." >&2
+  exit 1
+fi
+
+# Run rubocop on the changed Ruby files
+echo "Running rubocop on ${#ruby_files[@]} changed Ruby file(s)..."
+rubocop "${ruby_files[@]}"

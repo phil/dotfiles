@@ -17,3 +17,5 @@ alias n="nvim"
 alias k="kubectl --context"
 alias ka="kubectl --as admin --as-group system:masters --context"
 alias s="stern --context"
+
+alias c="claude"

@@ -49,4 +49,11 @@
 # resize-overlay-duration = 4s 200ms
 keybind = shift+enter=text:\x1b\r
 
+shell-integration = none
+window-save-state = never
+
+# macos-titlebar-style = hidden
+
 font-feature = -calt
+
+link-url = true
