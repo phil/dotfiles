@@ -35,8 +35,10 @@ fi
 echo "Fetching latest from origin..."
 git fetch origin
 
-# Get the toplevel of the repo and derive names
-REPO_DIR="$(git rev-parse --show-toplevel)"
+# Get the base repo directory (works from main repo or worktree)
+# The common git dir points to the main .git directory
+GIT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
+REPO_DIR="$(dirname "$GIT_COMMON_DIR")"
 REPO_NAME="$(basename "$REPO_DIR")"
 PARENT_DIR="$(dirname "$REPO_DIR")"
 WORKTREE_NAME="${REPO_NAME}-${BRANCH}"
@@ -73,6 +75,9 @@ else
 
   echo "Creating worktree at ${WORKTREE_PATH} with new branch '${BRANCH}' based on ${BASE}..."
   git worktree add -b "$BRANCH" "$WORKTREE_PATH" "$BASE"
+
+  # Unset upstream so first push creates new remote branch with same name
+  git -C "$WORKTREE_PATH" branch --unset-upstream
 fi
 
 enter_worktree
