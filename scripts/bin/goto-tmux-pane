@@ -1,26 +1,82 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 1 ]] || [[ "$1" != *:*:* ]]; then
-  echo "Usage: goto-tmux-pane S:W:P" >&2
-  echo "  S = session name, W = window name, P = pane title" >&2
-  echo "" >&2
-  echo "Example tmux binding:" >&2
-  echo "  bind-key g run-shell \"goto-tmux-pane 'mysession:mywindow:mypane'\"" >&2
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/goto-tmux-pane/previous"
+
+show_help() {
+  cat <<'EOF'
+Usage: goto-tmux-pane S:W:P
+       goto-tmux-pane --previous
+       goto-tmux-pane --help
+
+Arguments:
+  S:W:P       Session name, window name, and pane title to switch to.
+              Before switching, the current pane location is saved.
+
+Flags:
+  --previous  Switch back to the previously saved pane location.
+  --help      Show this help message.
+
+Example tmux binding:
+  bind-key g run-shell "goto-tmux-pane 'mysession:mywindow:mypane'"
+  bind-key b run-shell "goto-tmux-pane --previous"
+EOF
+}
+
+goto_pane() {
+  local target="$1"
+  IFS=':' read -r session window pane_title <<< "$target"
+
+  tmux switch-client -t "$session"
+  tmux select-window -t "$session:$window"
+
+  local pane_id
+  pane_id=$(tmux list-panes -t "$session:$window" -F '#{pane_id} #{pane_title}' \
+    | awk -v title="$pane_title" '$2 == title { print $1; exit }')
+
+  if [[ -z "$pane_id" ]]; then
+    echo "Error: no pane with title '$pane_title' in $session:$window" >&2
+    exit 1
+  fi
+
+  tmux select-pane -t "$pane_id"
+}
+
+save_current_location() {
+  local current_session current_window current_pane_title
+  current_session=$(tmux display-message -p '#S')
+  current_window=$(tmux display-message -p '#W')
+  current_pane_title=$(tmux display-message -p '#{pane_title}')
+
+  mkdir -p "$(dirname "$STATE_FILE")"
+  echo "${current_session}:${current_window}:${current_pane_title}" > "$STATE_FILE"
+}
+
+if [[ $# -ne 1 ]]; then
+  show_help >&2
   exit 1
 fi
 
-IFS=':' read -r session window pane_title <<< "$1"
-
-tmux switch-client -t "$session"
-tmux select-window -t "$session:$window"
-
-pane_id=$(tmux list-panes -t "$session:$window" -F '#{pane_id} #{pane_title}' \
-  | awk -v title="$pane_title" '$2 == title { print $1; exit }')
-
-if [[ -z "$pane_id" ]]; then
-  echo "Error: no pane with title '$pane_title' in $session:$window" >&2
-  exit 1
-fi
-
-tmux select-pane -t "$pane_id"
+case "$1" in
+  --help)
+    show_help
+    exit 0
+    ;;
+  --previous)
+    if [[ ! -f "$STATE_FILE" ]]; then
+      echo "Error: no previous pane location saved" >&2
+      exit 1
+    fi
+    previous=$(cat "$STATE_FILE")
+    save_current_location
+    goto_pane "$previous"
+    ;;
+  *:*:*)
+    save_current_location
+    goto_pane "$1"
+    ;;
+  *)
+    show_help >&2
+    exit 1
+    ;;
+esac
