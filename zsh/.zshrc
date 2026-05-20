@@ -34,7 +34,8 @@ eval "$(atuin init zsh)" # Better shell history
 
 export EDITOR='vim'
 
-fpath=(/Users/philbalchin/.docker/completions $fpath)
+fpath=(/Users/phil.balchin/.docker/completions $fpath)
+fpath=(/Users/phil.balchin/Code/zendesk/talk-scripts/completions $fpath)
 
 autoload -Uz compinit
 compinit

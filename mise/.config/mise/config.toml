@@ -2,3 +2,6 @@
 go = "1.26"
 node = "24"
 ruby = "4.0.1"
+
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]

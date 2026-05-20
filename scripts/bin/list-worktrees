@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Must be in a git repo
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  echo "Error: not inside a git repository." >&2
+  exit 1
+fi
+
+# Resolve the root repo directory (works from main repo or any worktree)
+GIT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
+REPO_DIR="$(dirname "$GIT_COMMON_DIR")"
+REPO_NAME="$(basename "$REPO_DIR")"
+
+# Resolve current directory for marking the active worktree
+CURRENT_DIR="$(cd "$PWD" && pwd -P)"
+
+# Get tmux sessions (if tmux is available and server is running)
+TMUX_SESSIONS=""
+if command -v tmux &>/dev/null && tmux list-sessions &>/dev/null; then
+  TMUX_SESSIONS="$(tmux list-sessions -F '#{session_name}' 2>/dev/null || true)"
+fi
+
+# Determine current tmux session name (if inside tmux)
+CURRENT_TMUX_SESSION=""
+if [[ -n "${TMUX:-}" ]]; then
+  CURRENT_TMUX_SESSION="$(tmux display-message -p '#{session_name}' 2>/dev/null || true)"
+fi
+
+# Parse worktree list
+declare -a WT_PATHS=()
+declare -a WT_BRANCHES=()
+
+current_path=""
+current_branch=""
+
+while IFS= read -r line; do
+  if [[ "$line" =~ ^worktree\ (.+)$ ]]; then
+    current_path="${BASH_REMATCH[1]}"
+  elif [[ "$line" =~ ^branch\ refs/heads/(.+)$ ]]; then
+    current_branch="${BASH_REMATCH[1]}"
+  elif [[ "$line" == "detached" ]]; then
+    current_branch="(detached)"
+  elif [[ -z "$line" ]]; then
+    if [[ -n "$current_path" ]]; then
+      WT_PATHS+=("$current_path")
+      WT_BRANCHES+=("${current_branch:-HEAD}")
+    fi
+    current_path=""
+    current_branch=""
+  fi
+done < <(git worktree list --porcelain)
+
+# Catch the last entry if no trailing blank line
+if [[ -n "$current_path" ]]; then
+  WT_PATHS+=("$current_path")
+  WT_BRANCHES+=("${current_branch:-HEAD}")
+fi
+
+# Print header
+echo ""
+echo "Worktrees for: ${REPO_NAME}"
+echo ""
+
+# Column header
+printf "  %-28s %-16s %-24s %-12s %s\n" "PATH" "BRANCH" "TRACKING" "STATUS" "TMUX"
+
+# Process each worktree
+for i in "${!WT_PATHS[@]}"; do
+  wt_path="${WT_PATHS[$i]}"
+  branch="${WT_BRANCHES[$i]}"
+  dir_name="$(basename "$wt_path")"
+
+  # Determine if this is the current worktree
+  resolved_wt="$(cd "$wt_path" 2>/dev/null && pwd -P || echo "$wt_path")"
+  if [[ "$CURRENT_DIR" == "$resolved_wt" || "$CURRENT_DIR" == "$resolved_wt/"* ]]; then
+    marker="*"
+  else
+    marker=" "
+  fi
+
+  # Get upstream tracking branch
+  upstream=""
+  if [[ "$branch" != "(detached)" ]]; then
+    upstream="$(git -C "$wt_path" rev-parse --abbrev-ref "${branch}@{upstream}" 2>/dev/null || true)"
+  fi
+
+  if [[ -z "$upstream" ]]; then
+    tracking="(no upstream)"
+    status="—"
+  else
+    tracking="$upstream"
+    # Get ahead/behind counts
+    counts="$(git -C "$wt_path" rev-list --left-right --count "${upstream}...HEAD" 2>/dev/null || echo "")"
+    if [[ -n "$counts" ]]; then
+      behind="$(echo "$counts" | awk '{print $1}')"
+      ahead="$(echo "$counts" | awk '{print $2}')"
+      if [[ "$ahead" -eq 0 && "$behind" -eq 0 ]]; then
+        status="up-to-date"
+      else
+        status=""
+        [[ "$ahead" -gt 0 ]] && status="+${ahead}"
+        [[ "$behind" -gt 0 ]] && { [[ -n "$status" ]] && status="${status}/"; status="${status}-${behind}"; }
+      fi
+    else
+      status="—"
+    fi
+  fi
+
+  # Check tmux session
+  # Convention: {repo}-{branch} or just {repo} for the main worktree
+  session_name="${REPO_NAME}-${branch}"
+  has_session=false
+
+  if [[ -n "$TMUX_SESSIONS" ]]; then
+    if echo "$TMUX_SESSIONS" | grep -qxF "$session_name"; then
+      has_session=true
+    elif echo "$TMUX_SESSIONS" | grep -qxF "$REPO_NAME" && [[ "$wt_path" == "$REPO_DIR" ]]; then
+      # Main worktree might use just the repo name
+      session_name="$REPO_NAME"
+      has_session=true
+    fi
+  fi
+
+  if [[ "$has_session" == true ]]; then
+    if [[ "$session_name" == "$CURRENT_TMUX_SESSION" ]]; then
+      tmux_col="[active]"
+    else
+      tmux_col="[session]"
+    fi
+  else
+    tmux_col="—"
+  fi
+
+  printf "%s %-28s %-16s %-24s %-12b %b\n" "$marker" "$dir_name" "$branch" "$tracking" "$status" "$tmux_col"
+done
+
+echo ""

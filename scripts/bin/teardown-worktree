@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FORCE=false
+DISCARD=false
+KEEP_BRANCH=false
+POSITIONAL=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --force|-f)
+      FORCE=true
+      shift
+      ;;
+    --discard)
+      DISCARD=true
+      shift
+      ;;
+    --keep-branch)
+      KEEP_BRANCH=true
+      shift
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift
+      ;;
+  esac
+done
+
+in_tmux() {
+  [[ -n "${TMUX:-}" ]]
+}
+
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  echo "Error: not inside a git repository." >&2
+  exit 1
+fi
+
+GIT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
+REPO_DIR="$(dirname "$GIT_COMMON_DIR")"
+REPO_NAME="$(basename "$REPO_DIR")"
+PARENT_DIR="$(dirname "$REPO_DIR")"
+
+# Determine the target worktree
+if [[ ${#POSITIONAL[@]} -eq 0 ]]; then
+  # No argument: operate on the current worktree
+  CURRENT_TOPLEVEL="$(git rev-parse --show-toplevel)"
+  if [[ "$CURRENT_TOPLEVEL" == "$REPO_DIR" ]]; then
+    echo "Error: currently in the main worktree. Specify a branch name or worktree path." >&2
+    echo "Usage: teardown-worktree [<branch-name>|<worktree-path>] [--force] [--discard] [--keep-branch]" >&2
+    exit 1
+  fi
+  WORKTREE_PATH="$CURRENT_TOPLEVEL"
+  BRANCH="$(git -C "$WORKTREE_PATH" rev-parse --abbrev-ref HEAD)"
+  WORKTREE_NAME="$(basename "$WORKTREE_PATH")"
+elif [[ -d "${POSITIONAL[0]}" ]]; then
+  # Argument is a path
+  WORKTREE_PATH="$(cd "${POSITIONAL[0]}" && pwd)"
+  BRANCH="$(git -C "$WORKTREE_PATH" rev-parse --abbrev-ref HEAD)"
+  WORKTREE_NAME="$(basename "$WORKTREE_PATH")"
+else
+  # Argument is a branch name
+  BRANCH="${POSITIONAL[0]}"
+  WORKTREE_NAME="${REPO_NAME}-${BRANCH}"
+  WORKTREE_PATH="${PARENT_DIR}/${WORKTREE_NAME}"
+fi
+
+# Check this isn't the main worktree
+if [[ "$WORKTREE_PATH" == "$REPO_DIR" ]]; then
+  echo "Error: cannot teardown the main worktree." >&2
+  exit 1
+fi
+
+# Handle case where worktree path doesn't exist but git may still reference it
+if [[ ! -d "$WORKTREE_PATH" ]]; then
+  echo "Worktree path '${WORKTREE_PATH}' does not exist."
+  echo "Pruning stale worktree bookkeeping..."
+  git -C "$REPO_DIR" worktree prune
+  echo "Done."
+  exit 0
+fi
+
+# Safety checks
+if [[ "$DISCARD" == false ]]; then
+  if [[ -n "$(git -C "$WORKTREE_PATH" status --porcelain)" ]]; then
+    echo "Error: worktree at '${WORKTREE_PATH}' has uncommitted changes." >&2
+    echo "Use --force --discard to proceed anyway." >&2
+    exit 1
+  fi
+fi
+
+if [[ "$FORCE" == false ]]; then
+  UPSTREAM="$(git -C "$WORKTREE_PATH" rev-parse --abbrev-ref "${BRANCH}@{upstream}" 2>/dev/null || true)"
+  if [[ -z "$UPSTREAM" ]]; then
+    echo "Error: branch '${BRANCH}' has no upstream. Local-only commits will be lost." >&2
+    echo "Use --force to proceed anyway." >&2
+    exit 1
+  else
+    LOCAL_SHA="$(git -C "$WORKTREE_PATH" rev-parse "$BRANCH")"
+    UPSTREAM_SHA="$(git -C "$WORKTREE_PATH" rev-parse "$UPSTREAM")"
+    if [[ "$LOCAL_SHA" != "$UPSTREAM_SHA" ]]; then
+      AHEAD="$(git -C "$WORKTREE_PATH" rev-list --count "${UPSTREAM}..${BRANCH}")"
+      if [[ "$AHEAD" -gt 0 ]]; then
+        echo "Error: branch '${BRANCH}' is ${AHEAD} commit(s) ahead of '${UPSTREAM}'." >&2
+        echo "Push your changes or use --force to proceed anyway." >&2
+        exit 1
+      fi
+    fi
+  fi
+fi
+
+# Determine if we are currently inside the target worktree
+CURRENT_DIR="$(pwd)"
+IN_TARGET=false
+if [[ "$CURRENT_DIR" == "$WORKTREE_PATH" || "$CURRENT_DIR" == "$WORKTREE_PATH/"* ]]; then
+  IN_TARGET=true
+fi
+
+# If inside the target worktree, switch to the main repo first
+if [[ "$IN_TARGET" == true ]]; then
+  if in_tmux; then
+    MAIN_SESSION="$REPO_NAME"
+    if ! tmux has-session -t "$MAIN_SESSION" 2>/dev/null; then
+      tmux new-session -d -s "$MAIN_SESSION" -c "$REPO_DIR"
+    fi
+    tmux switch-client -t "$MAIN_SESSION"
+  else
+    echo "Switching to main repo: ${REPO_DIR}"
+    cd "$REPO_DIR"
+  fi
+fi
+
+# Kill the tmux session for the worktree (if it exists)
+if in_tmux || [[ -n "${TMUX:-}" ]]; then
+  if tmux has-session -t "$WORKTREE_NAME" 2>/dev/null; then
+    echo "Killing tmux session '${WORKTREE_NAME}'..."
+    tmux kill-session -t "$WORKTREE_NAME"
+  fi
+fi
+
+# Remove the worktree
+echo "Removing worktree at '${WORKTREE_PATH}'..."
+if [[ "$FORCE" == true && "$DISCARD" == true ]]; then
+  git -C "$REPO_DIR" worktree remove --force "$WORKTREE_PATH"
+else
+  git -C "$REPO_DIR" worktree remove "$WORKTREE_PATH"
+fi
+
+# Delete the local branch
+if [[ "$KEEP_BRANCH" == false ]]; then
+  if [[ "$FORCE" == true ]]; then
+    echo "Force-deleting branch '${BRANCH}'..."
+    git -C "$REPO_DIR" branch -D "$BRANCH" 2>/dev/null || true
+  else
+    echo "Deleting branch '${BRANCH}' (if fully merged)..."
+    git -C "$REPO_DIR" branch -d "$BRANCH" 2>/dev/null || {
+      echo "Warning: branch '${BRANCH}' is not fully merged. Use --force to delete it." >&2
+    }
+  fi
+fi
+
+# Prune worktree bookkeeping
+git -C "$REPO_DIR" worktree prune
+
+echo "Teardown complete."

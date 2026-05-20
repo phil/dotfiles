@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(/Users/phil.balchin/.dotfiles/scripts/bin/list-worktrees *)",
+      "Bash(./scripts/bin/list-worktrees *)"
     ]
   }
 }
