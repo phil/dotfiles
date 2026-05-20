@@ -21,23 +21,23 @@
       "src": "https://github.com/norcalli/nvim-colorizer.lua"
     },
     "nvim-lspconfig": {
-      "rev": "8e2084bf5e40c79c1f42210a6ef96a0a4793a763",
+      "rev": "246572944c2a1e2a646c2e7609ff619b0fe74c18",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "7caec274fd19c12b55902a5b795100d21531391f",
+      "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {
-      "rev": "93d60a475f0b08a8eceb99255863977d3a25f310",
+      "rev": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
     },
     "plenary.nvim": {
-      "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "telescope.nvim": {
-      "rev": "cfb85dcf7f822b79224e9e6aef9e8c794211b20b",
+      "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
     "todo-comments.nvim": {
@@ -45,7 +45,7 @@
       "src": "https://github.com/folke/todo-comments.nvim"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "97e1548a40d5e9a613dd3789f3d422fb8e501781",
+      "rev": "f18e545c6ccbbae9875e63a2a7b8e8a9678a242e",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim"
     },
     "vim-fugitive": {
@@ -53,7 +53,7 @@
       "src": "https://github.com/tpope/vim-fugitive"
     },
     "vim-gitgutter": {
-      "rev": "55b368d4c68541775b4b253d3c98d3145b695c24",
+      "rev": "21c977e8597c468c7dc76001389b0b430d46a4b0",
       "src": "https://github.com/airblade/vim-gitgutter"
     },
     "vim-multiple-cursors": {
