@@ -8,15 +8,3 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHo
   pattern = "*",
   command = "checktime",
 })
-
--- dfvdvdfbfdbd
---
---
--- fdvfvdfbv
--- fvfdvdfbd
--- -- fvdvdfbvdfsbdsfbfsd
-
--- dscsdsvssvds
-
--- Highlight on yank
--- somergrfve

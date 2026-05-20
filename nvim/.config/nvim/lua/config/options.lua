@@ -14,8 +14,14 @@ vim.opt.splitright = true
 vim.opt.termguicolors = true
 vim.opt.colorcolumn = "80"
 
+vim.cmd.colorscheme("habamax")
+
 vim.opt.swapfile = false
 vim.opt.backup = false
+vim.opt.undofile = false
+
+-- vim.opt.autoread = true
+-- Prefer plugin for better performance
 
 -- Scrolling
 vim.opt.scrolloff = 8
@@ -44,5 +50,3 @@ vim.opt.foldlevel = 99
 -- zM to close all folds
 -- zR to open all folds
 
--- NERDTree
-vim.g.NERDTreeShowHidden = 1

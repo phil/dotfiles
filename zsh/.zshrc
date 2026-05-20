@@ -37,5 +37,10 @@ export EDITOR='vim'
 fpath=(/Users/phil.balchin/.docker/completions $fpath)
 fpath=(/Users/phil.balchin/Code/zendesk/talk-scripts/completions $fpath)
 
+[[ -f $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+setopt auto_list
+setopt auto_menu
+
 autoload -Uz compinit
 compinit

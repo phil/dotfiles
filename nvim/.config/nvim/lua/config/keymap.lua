@@ -25,3 +25,7 @@ vim.keymap.set("n", "g=", "gg=G''")
 
 -- Prevent Ex mode
 -- vim.keymap.set("n", "Q", "<Nop>")
+--
+
+-- Markdown
+vim.keymap.set("n", "<leader><space>", ":lua require('lib/markdown-checkbox-toggle').toggle()<CR>")
