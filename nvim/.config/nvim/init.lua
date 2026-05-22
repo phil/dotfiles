@@ -11,6 +11,7 @@ require("config/keymap")
 require("packs/ag")
 require("packs/autoread")
 require("packs/copilot")
+require("packs/colourscheme")
 require("packs/lsp")
 require("packs/nerdtree")
 require("packs/nvim-highlight-colors") -- has Deprecation warning
