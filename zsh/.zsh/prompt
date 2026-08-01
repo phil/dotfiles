@@ -2,8 +2,16 @@ setopt PROMPT_SUBST
 autoload colors && colors
 
 init_prompt () {
-	PROMPT="\$(shortpath) "
+    PROMPT="\$(ssh_host)\$(shortpath) "
     RPROMPT="\$(gitstatus)"
+}
+
+ssh_host() {
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        echo -e "%m "
+    else
+        echo ""
+    fi
 }
 
 shortpath() {

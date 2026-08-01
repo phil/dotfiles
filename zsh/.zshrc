@@ -34,7 +34,7 @@ eval "$(atuin init zsh)" # Better shell history
 
 export EDITOR='vim'
 
-fpath=(/Users/phil.balchin/.docker/completions $fpath)
+fpath=($HOME/.docker/completions $fpath)
 fpath=(/Users/phil.balchin/Code/zendesk/talk-scripts/completions $fpath)
 
 [[ -f $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
