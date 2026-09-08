@@ -44,3 +44,6 @@ setopt auto_menu
 
 autoload -Uz compinit
 compinit
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/philbalchin/.cache/lm-studio/bin"
