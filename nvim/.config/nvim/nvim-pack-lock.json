@@ -44,6 +44,10 @@
       "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
       "src": "https://github.com/folke/todo-comments.nvim"
     },
+    "tokyonight.nvim": {
+      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
+      "src": "https://github.com/folke/tokyonight.nvim"
+    },
     "tree-sitter-manager.nvim": {
       "rev": "f18e545c6ccbbae9875e63a2a7b8e8a9678a242e",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim"
