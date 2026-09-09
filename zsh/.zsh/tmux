@@ -1,0 +1,28 @@
+# Refresh the tmux status line when the git branch changes, so the branch in
+# status-right stays current without lowering status-interval.
+#
+# refresh-client -S re-runs *every* #() job in the status line and tmux applies
+# no rate limiting, so this deliberately fires only on an actual branch change
+# rather than on every prompt. Comparing state rather than matching command
+# names also catches aliases, `cd` into another repo, worktree switches and
+# branch changes made by scripts.
+
+if [[ -n "$TMUX" ]]; then
+  autoload -Uz add-zsh-hook
+
+  _tmux_branch_last=""
+
+  _tmux_branch_refresh() {
+    local branch
+    branch=$(git --no-optional-locks symbolic-ref --quiet --short HEAD 2>/dev/null) ||
+      branch=$(git --no-optional-locks rev-parse --short HEAD 2>/dev/null) ||
+      branch=""
+
+    [[ "$branch" == "$_tmux_branch_last" ]] && return
+
+    _tmux_branch_last="$branch"
+    tmux refresh-client -S 2>/dev/null
+  }
+
+  add-zsh-hook precmd _tmux_branch_refresh
+fi

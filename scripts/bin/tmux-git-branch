@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+show_help() {
+  cat <<'HELP'
+Usage: tmux-git-branch [PATH]
+
+Print the git branch for PATH (default: $PWD), prefixed with a single space.
+Prints nothing at all when PATH is not inside a git work tree, so the
+surrounding status-line separator collapses cleanly.
+
+Detached HEAD prints the short SHA. Branch names longer than 24 characters
+are truncated.
+
+Intended for the tmux status line:
+
+  set-option -g status-right '#(~/bin/tmux-git-branch "#{pane_current_path}")'
+HELP
+}
+
+case "${1:-}" in
+  -h | --help)
+    show_help
+    exit 0
+    ;;
+esac
+
+path="${1:-$PWD}"
+[[ -d "$path" ]] || exit 0
+
+# --no-optional-locks keeps the status line from contending for index.lock
+# with whatever is actually running in the pane.
+git=(git --no-optional-locks -C "$path")
+
+"${git[@]}" rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
+
+branch=$("${git[@]}" symbolic-ref --quiet --short HEAD 2>/dev/null) ||
+  branch=$("${git[@]}" rev-parse --short HEAD 2>/dev/null) ||
+  exit 0 # unreadable HEAD; symbolic-ref already covers the unborn case
+
+((${#branch} > 24)) && branch="${branch:0:23}…"
+
+printf ' %s' "$branch"

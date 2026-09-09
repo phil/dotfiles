@@ -31,6 +31,7 @@ eval "$(atuin init zsh)" # Better shell history
 # . ~/.zsh/config
 . ~/.zsh/aliases
 . ~/.zsh/prompt
+. ~/.zsh/tmux
 
 export EDITOR='vim'
 
